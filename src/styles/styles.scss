@@ -1,0 +1,19 @@
+@import "bootstrap/scss/bootstrap"; // Import all of Bootstrap's CSS
+
+.page {
+  &__section {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__section--pagination {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+}
