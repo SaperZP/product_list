@@ -150,15 +150,18 @@ cartItemsContainer.addEventListener('click', (event) => {
           case classList.contains('increase'):
             productsInCart.find(product => product.id === itemId).quantity += 1;
             renderCart();
+            renderCards(products);
             break;
           case classList.contains('decrease'):
             const item = productsInCart.find(product => product.id === itemId);
             item.quantity > 1 ? item.quantity -= 1 : productsInCart = productsInCart.filter(product => product.id !== itemId);
             renderCart();
+            renderCards(products);
             break;
           case classList.contains('remove-product'):
             productsInCart = productsInCart.filter(product => product.id !== itemId);
             renderCart();
+            renderCards(products);
             break;
           default:
             console.log('Clicked element does not contain any recognized class');
