@@ -51,7 +51,10 @@ function renderCards(items) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const itemsToDisplay = items.slice(startIndex, endIndex);
-  const cardsHTML = itemsToDisplay.map(item => cardComponent(item));
+  const cardsHTML = itemsToDisplay.map(item => {
+    const isChosen = productsInCart.find(itemFromCart => itemFromCart.id === item.id);
+    return cardComponent(item, isChosen?.quantity)
+  });
   cardsContainer.innerHTML = cardsHTML.join('');
   renderPagination(items.length);
 }
@@ -104,9 +107,6 @@ function renderCart() {
   const shipping = hasItems ? 5 : 0;
   const subtotal = productsInCart.reduce((total, product) => total + (product.price / 100 * discount) + product.quantity, 0);
   const total = subtotal + tax + shipping;
-
-  console.log(subtotal)
-
   const cartItems = productsInCart.map(product => cartCardComponent(product, discount));
   cartItemsContainer.innerHTML = cartItems.join();
 
@@ -130,7 +130,7 @@ modalForm.addEventListener('submit', (event) => {
 });
 
 cardsContainer.addEventListener('click', (event) => {
-  if (event.target.tagName.toLowerCase() === 'button' && event.target.textContent === 'Add to cart') {
+  if (event.target.tagName.toLowerCase() === 'button' && event.target.textContent.includes('Add to cart')) {
     const title = event.target.parentNode.parentNode.querySelector('.card-title').textContent;
     const isCartProduct = productsInCart.find(product => product.title === title);
     const chosenProduct = products.find(product => product.title === title);
@@ -138,6 +138,7 @@ cardsContainer.addEventListener('click', (event) => {
   }
 
   renderCart();
+  renderCards(products);
 });
 
 cartItemsContainer.addEventListener('click', (event) => {
@@ -152,7 +153,7 @@ cartItemsContainer.addEventListener('click', (event) => {
             break;
           case classList.contains('decrease'):
             const item = productsInCart.find(product => product.id === itemId);
-            item.quantity > 0 ? item.quantity -= 1 : item.quantity;
+            item.quantity > 1 ? item.quantity -= 1 : productsInCart = productsInCart.filter(product => product.id !== itemId);
             renderCart();
             break;
           case classList.contains('remove-product'):
